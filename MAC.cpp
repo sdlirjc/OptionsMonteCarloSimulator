@@ -136,9 +136,9 @@ int main()
       
       for(int j = 0; j < ttm; ++j){
          
-         ranZ = (double)(rand() % (max - min + 1) + min) / 10000;
-         dW = NORMINV(ranZ);
-         nS = nS + (q * nS * dX) + (v * nS * sDX * dW);
+         ranZ = (double)(rand() % (max - min + 1) + min) / 10000;    // C++ random number generator between (1% - 100%)
+         dW = NORMINV(ranZ);                                         // Returns the NormInv() of the random probability
+         nS = nS + (q * nS * dX) + (v * nS * sDX * dW);              // Quantitative Finance Monte Carlo Formula
 
       }
       
