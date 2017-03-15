@@ -107,15 +107,15 @@ int main()
 
 	// ------------------------------------- USER INPUTS
 
-	S = 100;      // Stock
-	K = 105;      // Strike
+	S = 105;      // Stock
+	K = 100;      // Strike
 	r = 0.05;     // Risk-Free Rate
-	q = 0.01;     // Dividend
-	v = 0.3;      // Volatility
-	t = 30;       // Time Till Expiration
+	q = 0.02;     // Dividend
+	v = 0.25;      // Volatility
+	t = 60;       // Time Till Expiration
 	ttm = 200;    // Time steps
-	type = 0;     // Option Type (0) Call (1) Put
-	sims = 150;   // Number of simulations
+	type = 1;     // Option Type (0) Call (1) Put
+	sims = 100;   // Number of simulations
 
 	// --------------------------------------------------
 
@@ -130,15 +130,17 @@ int main()
    
    // Conducts the option price simulation
    
+   cout << endl << "Conductiong Simulation\n" << endl;
+
    for(int i = 0; i < sims; ++i){
       
       nS = S;
       
       for(int j = 0; j < ttm; ++j){
          
-         ranZ = (double)(rand() % (max - min + 1) + min) / 10000;    // C++ random number generator between (1% - 100%)
-         dW = NORMINV(ranZ);                                         // Returns the NormInv() of the random probability
-         nS = nS + (q * nS * dX) + (v * nS * sDX * dW);              // Quantitative Finance Monte Carlo Formula
+         ranZ = (double)(rand() % (max - min + 1) + min) / 10000;
+         dW = NORMINV(ranZ);
+         nS = nS + (q * nS * dX) + (v * nS * sDX * dW);
 
       }
       
@@ -161,24 +163,32 @@ int main()
       
       payoff[i] = payoff[i] * exp(-r * t);
       sum += payoff[i];
-
+	  
+	  cout << (i + 1) << "...";
    }
    
    
 
    sum /= (double) sims;
    stdev = pVar(payoff, sum, sims);
+   stdev /= sqrt((double)sims);
 
    con = 1.96 * stdev;
+
+   double minC = sum - con;
+   double maxC = sum + con;
+
+   if(minC < 0){
+	   minC = 0;
+   }
 
 
    // =================================================================================================== RESULTS
 
-   cout << "\nOPTIONS PRICE MONTE CARLO SIMULATION\n" << endl;
-   cout << "Average Simulated Option Price: " << sum << endl;
-   cout << "Simulation Standard Deviation: " << stdev << endl;
-   cout << "Simulation Margin of Error: " << con << endl;
-   cout << "We are 95% confident the option price is between : (" << 0 << "," << sum + con << ")" << endl;
+   cout << "\n\nOPTIONS PRICE MONTE CARLO SIMULATION\n" << endl;
+   cout << "Average Simulated Option Price: $" << sum << endl;
+   cout << "Simulation Standard Error: " << stdev << endl;
+   cout << "We are 95% confident the option price is between : ($" << minC << ",$" << maxC << ")" << endl;
   
    // ===========================================================================================================
 
